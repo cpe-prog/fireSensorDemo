@@ -1,14 +1,15 @@
-import { Stack } from "expo-router";
+import { Stack, Tabs } from "expo-router";
 import { onValue, ref, set } from "firebase/database";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { Button, Text } from "react-native-paper";
 import database from "../firebase.config";
 
 export default function Home() {
 	const [isRelay1On, setIsRelay1On] = useState(false);
 	const [isRelay2On, setIsRelay2On] = useState(false);
 	const [values, setValues] = useState(null);
+	const [pump1On, setPump1On] = useState(false);
 
 	useEffect(() => {
 		const path = "Flame/1/flame1";
@@ -35,13 +36,19 @@ export default function Home() {
 		await set(valueRef, isRelay2On ? true : false);
 		setIsRelay2On((prev) => !prev);
 		console.log(valueRef, isRelay2On);
+		if (isRelay1On === true) {
+			setPump1On(true);
+		} else {
+			setPump1On(false);
+		}
 	};
+
 	return (
 		<View style={styles.container}>
 			<Stack.Screen
 				options={{
 					title: "My home",
-					headerStyle: { backgroundColor: "#f4511e" },
+					headerStyle: { backgroundColor: "#78a8f5" },
 					headerTintColor: "#fff",
 					headerTitleStyle: {
 						fontWeight: "bold",
@@ -50,30 +57,22 @@ export default function Home() {
 					headerTitle: "Home",
 				}}
 			/>
-			<View className="bg-black w-full h-full">
-				<View style={styles.value}>
-					<Text className="bg-red-400 font-bold">
-						Flame Sensor: {JSON.stringify(values)}
-					</Text>
-				</View>
-			</View>
-			<View
-				style={{
-					justifyContent: "center",
-					alignItems: "center",
-					display: "flex",
-					padding: 10,
-					height: 200,
-					maxWidth: 500,
-				}}
+			<Text
+				style={{ textAlign: "center", fontWeight: "bold" }}
+				variant="displayLarge"
 			>
-				<Button style={styles.Button1} onPress={handleRelay1} mode="contained">
-					Pump1
+				Fire Monitoring
+			</Text>
+
+			<View style={styles.btnContainer}>
+				<Button style={styles.btn} onPress={handleRelay1} mode="contained">
+					Pump 1
 				</Button>
-				<Button onPress={handleRelay2} mode="contained">
+				<Button style={styles.btn} onPress={handleRelay2} mode="contained">
 					Pump2
 				</Button>
 			</View>
+			<Tabs />
 		</View>
 	);
 }
@@ -81,30 +80,16 @@ export default function Home() {
 const styles = StyleSheet.create({
 	container: {
 		display: "flex",
+		width: "100%",
+		height: "100%",
+		backgroundColor: "#d7e4fa",
+	},
+	btn: {},
+	btnContainer: {
+		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-	},
-	image: {
-		width: 50,
-		height: 50,
-	},
-	text: {
-		marginTop: 5,
-	},
-	div: {
-		width: 200,
-		height: 200,
-		borderBlockColor: "#f2f",
-		borderRadius: 5,
-		marginBottom: 50,
-		marginTop: 100,
-		padding: 10,
-		shadowColor: "#f2f",
-		borderColor: "f2f",
-		borderWidth: 2,
-	},
-	value: {},
-	Button1: {
-		marginBottom: 20,
+		flexDirection: "row",
+		gap: 20,
 	},
 });
