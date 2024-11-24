@@ -6,13 +6,17 @@ import { Button, Text } from "react-native-paper";
 import database from "../firebase.config";
 
 export default function Home() {
-	const [isRelay1On, setIsRelay1On] = useState(false);
-	const [isRelay2On, setIsRelay2On] = useState(false);
+	const [isLamp1On, setIsLamp1On] = useState(false);
+	const [isLamp2On, setIsLamp2On] = useState(false);
+	const [isLamp3On, setIsLamp3On] = useState(false);
+	const [isFan1On, setIsFan1On] = useState(false);
+	const [isFan2On, setIsFan2On] = useState(false);
+	const [isSprayOn, setIsSprayOn] = useState(false);
+
 	const [values, setValues] = useState(null);
-	const [pump1On, setPump1On] = useState(false);
 
 	useEffect(() => {
-		const path = "Flame/1/flame1";
+		const path = "SENSORS/1/flame";
 		const valueRef = ref(database, path);
 		const unsubscribe = onValue(valueRef, (snapshot) => {
 			const value = snapshot.val();
@@ -22,27 +26,53 @@ export default function Home() {
 		return () => unsubscribe();
 	}, []);
 
-	const handleRelay1 = async () => {
-		const path = "Controls/Relay1";
+	const handleLamp1 = async () => {
+		const path = "Controls/lamp1";
 		const valueRef = ref(database, path);
-		await set(valueRef, isRelay1On ? true : false);
-		setIsRelay1On((prev) => !prev);
-		console.log(valueRef, isRelay1On);
+		await set(valueRef, isLamp1On ? true : false);
+		setIsLamp1On((prev) => !prev);
+		console.log(valueRef, isLamp1On);
 	};
 
-	const handleRelay2 = async () => {
-		const path = "Controls/Relay2";
+	const handleLamp2 = async () => {
+		const path = "Controls/lamp2";
 		const valueRef = ref(database, path);
-		await set(valueRef, isRelay2On ? true : false);
-		setIsRelay2On((prev) => !prev);
-		console.log(valueRef, isRelay2On);
-		if (isRelay1On === true) {
-			setPump1On(true);
-		} else {
-			setPump1On(false);
-		}
+		await set(valueRef, isLamp2On ? true : false);
+		setIsLamp2On((prev) => !prev);
+		console.log(valueRef, isLamp2On);
 	};
 
+	const handleLamp3 = async () => {
+		const path = "Controls/lamp3";
+		const valueRef = ref(database, path);
+		await set(valueRef, isLamp3On ? true : false);
+		setIsLamp3On((prev) => !prev);
+		console.log(valueRef, isLamp3On);
+	};
+
+	const handleFan1 = async () => {
+		const path = "Controls/fan1";
+		const valueRef = ref(database, path);
+		await set(valueRef, isFan1On ? true : false);
+		setIsFan1On((prev) => !prev);
+		console.log(valueRef, isFan1On);
+	};
+
+	const handleFan2 = async () => {
+		const path = "Controls/fan2";
+		const valueRef = ref(database, path);
+		await set(valueRef, isFan2On ? true : false);
+		setIsFan2On((prev) => !prev);
+		console.log(valueRef, isFan2On);
+	};
+
+	const handleSpray = async () => {
+		const path = "Controls/spray";
+		const valueRef = ref(database, path);
+		await set(valueRef, isSprayOn ? true : false);
+		setIsSprayOn((prev) => !prev);
+		console.log(valueRef, isSprayOn);
+	};
 	return (
 		<View style={styles.container}>
 			<Stack.Screen
@@ -63,13 +93,32 @@ export default function Home() {
 			>
 				Fire Monitoring
 			</Text>
+			<View style={{ alignItems: "center" }}>
+				<Text variant="displaySmall">
+					Value: {values ? JSON.stringify(values) : "No data Found!"}
+				</Text>
+			</View>
 
 			<View style={styles.btnContainer}>
-				<Button style={styles.btn} onPress={handleRelay1} mode="contained">
-					Pump 1
+				<Button style={styles.btn} onPress={handleLamp1} mode="contained">
+					Lamp1
 				</Button>
-				<Button style={styles.btn} onPress={handleRelay2} mode="contained">
-					Pump2
+				<Button style={styles.btn} onPress={handleLamp2} mode="contained">
+					Lamp2
+				</Button>
+				<Button style={styles.btn} onPress={handleLamp3} mode="contained">
+					Lamp3
+				</Button>
+			</View>
+			<View style={styles.btnContainer}>
+				<Button style={styles.btn} onPress={handleFan1} mode="contained">
+					Fan1
+				</Button>
+				<Button style={styles.btn} onPress={handleFan2} mode="contained">
+					Fan2
+				</Button>
+				<Button style={styles.btn} onPress={handleSpray} mode="contained">
+					Spray
 				</Button>
 			</View>
 			<Tabs />
